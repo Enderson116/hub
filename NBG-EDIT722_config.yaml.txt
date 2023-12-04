@@ -1,0 +1,413 @@
+=~=~=~=~=~=~=~=~=~=~=~= PuTTY log 2023.11.28 10:36:05 =~=~=~=~=~=~=~=~=~=~=~=
+
+[root@fuel cee_config]# 
+[root@fuel cee_config]# 
+[root@fuel cee_config]# cat config.yaml 
+ericsson:                                                                                                                                
+  anchors:                                                                                                                               
+    nic_assignments:                                                                                                                     
+    - &BSP_GEP5_nic_assignment                                                                                                           
+      control0: "0000:02:00.1"                                                                                                           
+      control1: "0000:02:00.2"                                                                                                           
+      data0:    "0000:01:00.0"                                                                                                           
+      data1:    "0000:01:00.1"                                                                                                           
+      storage0: "0000:04:00.0"                                                                                                           
+      storage1: "0000:04:00.1"                                                                                                           
+    - &BSP_GEP7_nic_assignment                                                                                                           
+      control0: "0000:0a:00.0"                                                                                                           
+      control1: "0000:0d:00.0"                                                                                                           
+      data0:    "0000:01:00.0"                                                                                                           
+      data1:    "0000:01:00.1"                                                                                                           
+      storage0: "0000:07:00.0"                                                                                                           
+      storage1: "0000:07:00.1"                                                                                                           
+    reservedHugepages:                                                                                                                   
+    - &reservedHugepages                                                                                                                 
+      - owner: ovs                                                                                                                       
+        size: 2MB                                                                                                                        
+        count: 1024                                                                                                                      
+      - owner: vm                                                                                                                        
+        size: 1GB                                                                                                                        
+        count: auto                                                                                                                      
+    - &reservedHugepages_with_vcic                                                                                                       
+      - owner: ovs                                                                                                                       
+        size: 2MB                                                                                                                        
+        count: 1024                                                                                                                      
+      - owner: vm                                                                                                                        
+        size: 1GB                                                                                                                        
+        count: auto                                                                                                                      
+      - owner: vcic                                                                                                                      
+        size: 1GB                                                                                                                        
+        count: 45                                                                                                                        
+    - &reservedHugepages_with_vcic_and_vfuel                                                                                             
+      - owner: ovs                                                                                                                       
+        size: 2MB                                                                                                                        
+        count: 1024                                                                                                                      
+      - owner: vm                                                                                                                        
+        size: 1GB                                                                                                                        
+        count: auto                                                                                                                      
+      - owner: vcic                                                                                                                      
+        size: 1GB                                                                                                                        
+        count: 45                                                                                                                        
+      - owner: vfuel                                                                                                                     
+        size: 1GB                                                                                                                        
+        count: 3                                                                                                                         
+    reservedCPUs:                                                                                                                        
+    - &reservedCPUs                                                                                                                      
+      - owner: vm                                                                                                                        
+        count: auto                                                                                                                      
+      - owner: ovs                                                                                                                       
+        css_mode: custom                                                                                                                 
+        cpus: 1                                                                                                                          
+        cpus_nonpmd: 0                                                                                                                   
+      - owner: idle                                                                                                                      
+        cpus: 11                                                                                                                         
+        notick: true                                                                                                                     
+    - &reservedCPUs_with_vcic                                                                                                            
+      - owner: vm                                                                                                                        
+        count: auto                                                                                                                      
+      - owner: ovs                                                                                                                       
+        css_mode: custom                                                                                                                 
+        cpus: 1                                                                                                                          
+        cpus_nonpmd: 0                                                                                                                   
+      - owner: idle                                                                                                                      
+        cpus: 11                                                                                                                         
+        notick: true                                                                                                                     
+      - owner: vcic                                                                                                                      
+        count: 6                                                                                                                         
+    - &reservedCPUs_with_vfuel                                                                                                           
+      - owner: vm                                                                                                                        
+        count: auto                                                                                                                      
+      - owner: ovs                                                                                                                       
+        css_mode: custom                                                                                                                 
+        cpus: 1                                                                                                                          
+        cpus_nonpmd: 0                                                                                                                   
+      - owner: vfuel                                                                                                                     
+        count: 1                                                                                                                         
+      - owner: idle                                                                                                                      
+        cpus: 11                                                                                                                         
+        notick: true                                                                                                                     
+    - &reservedCPUs_with_vcic_and_vfuel                                                                                                  
+      - owner: vm                                                                                                                        
+        count: auto                                                                                                                      
+      - owner: ovs                                                                                                                       
+        css_mode: custom                                                                                                                 
+        cpus: 1                                                                                                                          
+        cpus_nonpmd: 0                                                                                                                   
+      - owner: idle                                                                                                                      
+        cpus: 11                                                                                                                         
+        notick: true                                                                                                                     
+      - owner: vcic                                                                                                                      
+        count: 6                                                                                                                         
+      - owner: vfuel                                                                                                                     
+        count: 1                                                                                                                         
+    reservedDisks:                                                                                                                       
+    - &reservedDisk_for_vcic                                                                                                             
+      - owner: vcic                                                                                                                      
+        size: 512G                                                                                                                       
+    - &reservedDisk_for_vfuel                                                                                                            
+      - owner: vfuel                                                                                                                     
+        size: 80G                                                                                                                        
+    - &reservedDisk_for_vcic_and_vfuel                                                                                                   
+      - owner: vcic                                                                                                                      
+        size: 512G                                                                                                                       
+      - owner: vfuel                                                                                                                     
+        size: 80G                                                                                                                        
+  region_name: NBGIPWORKSTA3B                                                                                                            
+  timezone: CET                                                                                                                          
+  os_workers_flavor: os_workers_default                                                                                                  
+  globals:                                                                                                                               
+    compute_io_scheduler: deadline                                                                                                       
+    compute_os_reserved_mem: {64: 6, 128: 6, 192: 6, 256: 6, 320: 6, 384: 6, 448: 6, 512: 6}                                             
+    ovs_dpdk_io_driver: vfio-pci                                                                                                         
+    grub:                                                                                                                                
+      grub_username: grubuser                                                                                                            
+      grub_password: '##Ce3Adm1N##'                                                                                                      
+    fstrim:                                                                                                                              
+      disabled: true                                                                                                                     
+  neutron:                                                                                                                               
+    mgmt_vip: 192.168.2.15                                                                                                               
+    mgmt_subnetmask: 25                                                                                                                  
+    l2_vlan_start: 3980                                                                                                                  
+    l2_vlan_end: 3999                                                                                                                    
+    neutron_config_yaml_file: neutron_ericsson_bsp.yaml                                                                                  
+  nova:                                                                                                                                  
+    disk_cachemodes: file=directsync,block=none                                                                                          
+    enable_nova_quotas: true                                                                                                             
+    force_config_drive: true                                                                                                             
+    vms_use_raw_images: false                                                                                                            
+  cmha:                                                                                                                                  
+    fence_compute_before_evacuation: false                                                                                               
+    try_to_recover_compute_after_evacuation: true                                                                                        
+  hw_switches:                                                                                                                           
+    initial_setup: cmx                                                                                                                   
+    switching_scheme_yaml_file: bsp_switch.yaml                                                                                          
+  shelf:                                                                                                                                 
+    -                                                                                                                                    
+      id: 0                                                                                                                              
+      shelf_mgmt:                                                                                                                        
+        ip: 192.168.2.2                                                                                                                  
+        name: cee_ctrl_sp                                                                                                                
+        lct_ip: 10.0.10.2                                                                                                                
+        passwd: ett,30                                                                                                                   
+        username: advanced                                                                                                               
+        bsp_tenant: NBGEDIT722                                                                                                           
+      blade:                                                                                                                             
+        -                                                                                                                                
+          id: 1                                                                                                                          
+          nic_assignment: *BSP_GEP5_nic_assignment                                                                                       
+          reservedHugepages: *reservedHugepages_with_vcic_and_vfuel                                                                      
+          reservedCPUs: *reservedCPUs_with_vcic_and_vfuel                                                                                
+          reservedDisk: *reservedDisk_for_vcic_and_vfuel                                                                                 
+          vfuel: ""                                                                                                                      
+          virt:                                                                                                                          
+            cic:                                                                                                                         
+              id: 1                                                                                                                      
+        -                                                                                                                                
+          id: 2                                                                                                                          
+          nic_assignment: *BSP_GEP5_nic_assignment                                                                                       
+          reservedHugepages: *reservedHugepages_with_vcic_and_vfuel                                                                      
+          reservedCPUs: *reservedCPUs_with_vcic_and_vfuel                                                                                
+          reservedDisk: *reservedDisk_for_vcic_and_vfuel                                                                                 
+          virt:                                                                                                                          
+            cic:                                                                                                                         
+              id: 2                                                                                                                      
+        -                                                                                                                                
+          id: 3                                                                                                                          
+          nic_assignment: *BSP_GEP5_nic_assignment                                                                                       
+          reservedHugepages: *reservedHugepages_with_vcic                                                                                
+          reservedCPUs: *reservedCPUs_with_vcic                                                                                          
+          reservedDisk: *reservedDisk_for_vcic                                                                                           
+          virt:                                                                                                                          
+            cic:                                                                                                                         
+              id: 3                                                                                                                      
+        -                                                                                                                                
+          id: 4                                                                                                                          
+          nic_assignment: *BSP_GEP5_nic_assignment                                                                                       
+          reservedHugepages: *reservedHugepages                                                                                          
+          reservedCPUs: *reservedCPUs                                                                                                    
+        -                                                                                                                                
+          id: 5                                                                                                                          
+          nic_assignment: *BSP_GEP5_nic_assignment                                                                                       
+          reservedHugepages: *reservedHugepages                                                                                          
+          reservedCPUs: *reservedCPUs                                                                                                    
+        -                                                                                                                                
+          id: 6                                                                                                                          
+          nic_assignment: *BSP_GEP5_nic_assignment                                                                                       
+          reservedHugepages: *reservedHugepages                                                                                          
+          reservedCPUs: *reservedCPUs                                                                                                    
+        -                                                                                                                                
+          id: 7                                                                                                                          
+          nic_assignment: *BSP_GEP5_nic_assignment                                                                                       
+          reservedHugepages: *reservedHugepages                                                                                          
+          reservedCPUs: *reservedCPUs                                                                                                    
+  host_networking:                                                                                                                       
+    template_yaml_file: host_nw_bsp.yaml                                                                                                 
+  networks:                                                                                                                              
+    -                                                                                                                                    
+      name: om_sibb_nlcl                                                                                                                 
+      tag: 2                                                                                                                             
+    -                                                                                                                                    
+      name: om_sibb_sp                                                                                                                   
+      tag: 1205                                                                                                                          
+    -                                                                                                                                    
+      name: bsp_om_sp                                                                                                                    
+      tag: 10                                                                                                                            
+    -                                                                                                                                    
+      name: lct_ctrl                                                                                                                     
+      tag: 0                                                                                                                             
+      cidr: 10.0.10.11/25                                                                                                                
+    -                                                                                                                                    
+      name: cee_om_sp                                                                                                                    
+      tag: 4020                                                                                                                          
+      cidr: 172.22.121.64/28                                                                                                             
+      start: 172.22.121.68                                                                                                               
+      end: 172.22.121.76                                                                                                                 
+      gateway: 172.22.121.65                                                                                                             
+      vrouter: 172.22.121.77                                                                                                             
+      vip: 172.22.121.78                                                                                                                 
+    -                                                                                                                                    
+      name: cee_ctrl_sp                                                                                                                  
+      tag: 4002                                                                                                                          
+      cidr: 192.168.2.11/25                                                                                                              
+      start: 192.168.2.20                                                                                                                
+      end: 192.168.2.124                                                                                                                 
+      vrouter: 192.168.2.125                                                                                                             
+      vip: 192.168.2.126                                                                                                                 
+    -                                                                                                                                    
+      name: lcm_ctrl_sp                                                                                                                  
+      tag: 4028                                                                                                                          
+      cidr: 192.168.0.11/25                                                                                                              
+      dhcp_pool_start: 192.168.0.20                                                                                                      
+      dhcp_pool_end: 192.168.0.125                                                                                                       
+      #dns: 100.100.100.100                                                                                                              
+      gateway: 192.168.0.126                                                                                                             
+    -                                                                                                                                    
+      name: iscsi_san_pda                                                                                                                
+      tag: 4011                                                                                                                          
+      cidr: 192.168.11.0/25                                                                                                              
+      start: 192.168.11.20                                                                                                               
+      end: 192.168.11.126                                                                                                                
+    -                                                                                                                                    
+      name: iscsi_san_pdb                                                                                                                
+      tag: 4012                                                                                                                          
+      cidr: 192.168.12.0/25                                                                                                              
+      start: 192.168.12.20                                                                                                               
+      end: 192.168.12.126                                                                                                                
+    -                                                                                                                                    
+      name: swift_san_sp                                                                                                                 
+      tag: 4013                                                                                                                          
+      cidr: 192.168.13.0/29                                                                                                              
+      start: 192.168.13.1                                                                                                                
+      end: 192.168.13.6                                                                                                                  
+    -                                                                                                                                    
+      name: migration_san_sp                                                                                                             
+      tag: 4014                                                                                                                          
+      cidr: 192.168.14.0/25                                                                                                              
+      start: 192.168.14.20                                                                                                               
+      end: 192.168.14.126                                                                                                                
+    -                                                                                                                                    
+      name: internal                                                                                                                     
+      cidr: 192.168.111.0/25                                                                                                             
+      gateway: 192.168.111.1                                                                                                             
+  ntp_config:                                                                                                                            
+    servers: [172.22.13.10, 172.22.13.11]                                                                                                
+    orphan_mode_stratum: 7                                                                                                               
+    authentication: None                                                                                                                 
+  legaltext:                                                                                                                             
+    local: "Attention! Unauthorized local access is strictly prohibited!\n"                                                              
+    remote: "\nAttention! Unauthorized remote access is strictly prohibited!\n\n"                                                        
+  storage:                                                                                                                               
+    localdisks:                                                                                                                          
+      cic:                                                                                                                               
+        os_size: 51200                                                                                                                   
+        logs_size: 153600                                                                                                                
+        crashes_size: 102400                                                                                                             
+        datacoll_size: 5120                                                                                                              
+        mysql_size: 92160                                                                                                                
+        redis_size: 30720                                                                                                                
+      compute:                                                                                                                           
+        os_size: 51200                                                                                                                   
+        logs_size: 10240                                                                                                                 
+        crashes_size: 30720                                                                                                              
+        datacoll_size: 1024                                                                                                              
+  glance:                                                                                                                                
+    image_cache_max_size: 5368709120                                                                                                     
+    enable_glance_image_cache: false                                                                                                     
+  idam:                                                                                                                                  
+    ldap:                                                                                                                                
+      basedn: dc=cee,dc=ericsson,dc=com                                                                                                  
+      rootdn: cn=admin                                                                                                                   
+      rootpw: ''                                                                                                                         
+      anonymous_binddn: cn=anon                                                                                                          
+      anonymous_bindpwd: ''                                                                                                              
+      manager_binddn: cn=manager                                                                                                         
+      manager_bindpwd: ''                                                                                                                
+      sync_binddn: cn=sync                                                                                                               
+      sync_bindpwd: ''                                                                                                                   
+    userlist:                                                                                                                            
+    - ceeadm                                                                                                                             
+    - cmha                                                                                                                               
+    - ceebackup                                                                                                                          
+    - ceecore                                                                                                                            
+    users:                                                                                                                               
+      ceebackup:                                                                                                                         
+        idam_tag:                                                                                                                        
+        - admin                                                                                                                          
+        passwd: '##Ce3B4ckuP##'                                                                                                          
+      ceeadm:                                                                                                                            
+        idam_tag:                                                                                                                        
+        - none                                                                                                                           
+        passwd: '##Ce3Adm1N##'                                                                                                           
+        openstack_access:                                                                                                                
+          os_tenant: admin                                                                                                               
+          os_create_account: false                                                                                                       
+          os_password: "admin"                                                                                                           
+          os_username: admin                                                                                                             
+          os_role: admin                                                                                                                 
+      cmha:                                                                                                                              
+        idam_tag:                                                                                                                        
+        - none                                                                                                                           
+      ceecore:                                                                                                                           
+        idam_tag:                                                                                                                        
+        - none                                                                                                                           
+  license:
+
+    nels_server_host: 172.23.56.248
+
+    nels_server_port: 9095
+
+    nels_server_trusted_hostname: NBGERNELS1.nels.ericsson.com
+
+    tls_trusted_ca_certificate: nels_ecs_trusted_ca_certificates.pem
+
+    openssl:
+
+      ciphersuites: 'AES256-GCM-SHA384:AES256-SHA256:AES128-GCM-SHA256:AES128-SHA256'
+
+      protocols: TLSv1.2                                                                                                                 
+  log-aggregator:                                                                                                                        
+      relp_port: 20514                                                                                                                   
+      udp_port: 10514                                                                                                                    
+      tcp_port: 514                                                                                                                      
+  logging:                                                                                                                               
+    crashes: cics                                                                                                                        
+    forward_to_fuel: false                                                                                                               
+    forward_to_controller: true                                                                                                          
+    forward_to_external: false                                                                                                           
+    external_server_ip:                                                                                                                  
+    external_server_port:                                                                                                                
+    local_on_controller: true                                                                                                            
+    local_on_compute: false                                                                                                              
+    audit_remote_server_ip:                                                                                                              
+  zabbix_cee_user:                                                                                                                       
+    zabbix_user_group: 'CEEUserGroup'                                                                                                    
+    zabbix_user: 'ceeuser'                                                                                                               
+    zabbix_password: '##Ce3Zab1N##'                                                                                                      
+  fuel-plugins:                                                                                                                          
+  - name: ericsson_bsp_ml2                                                                                                               
+  - name: ericsson_cee_backup                                                                                                            
+  - name: ericsson_cmha                                                                                                                  
+  - name: ericsson_css                                                                                                                   
+    config_attributes:                                                                                                                   
+      dpdk_bond_mode: active-backup                                                                                                      
+  - name: ericsson_hardening                                                                                                             
+  - name: ericsson_hcframework                                                                                                           
+  - name: ericsson_idam                                                                                                                  
+  - name: ericsson_infra_setup                                                                                                           
+  - name: ericsson_ldap                                                                                                                  
+    config_attributes:                                                                                                                   
+      ldap_config_file: /mnt/cee_config/eri_ldap_config.yaml                                                                             
+  - name: ericsson_logging                                                                                                               
+  - name: ericsson_ndevalarm                                                                                                             
+  - name: ericsson_ntp                                                                                                                   
+  - name: ericsson_openstack_config                                                                                                      
+    config_attributes:                                                                                                                   
+      dhcp_agent_hosts:                                                                                                                  
+      - computes                                                                                                                         
+  - name: ericsson_portal                                                                                                                
+  - name: ericsson_pm                                                                                                                    
+  - name: ericsson_service_supervision                                                                                                   
+  - name: ericsson_sheriff                                                                                                               
+  - name: ericsson_tls                                                                                                                   
+    config_attributes:                                                                                                                   
+      tls_config_file: /mnt/cee_config/tls_conf_file.yaml                                                                                
+  - name: ericsson_telemetry                                                                                                             
+    config_attributes:                                                                                                                   
+      telemetry_config_file: /mnt/cee_config/eri_telemetry_config.yaml                                                                   
+  - name: ericsson_watchmen                                                                                                              
+  - name: ericsson_zabbix                                                                                                                
+    config_attributes:                                                                                                                   
+      rest: true                                                                                                                         
+      isplogs: true                                                                                                                      
+      characteristics: true                                                                                                              
+      pmreports: true                                                                                                                    
+                                                                                                                                         
+#There are fuel plugins that are not included in the ISO but may                                                                         
+#be required for certain installation. Depending on the configuration                                                                    
+#the following optional plugins have to be enabled. Make sure that the                                                                   
+#the plugin package is put to the folder where the installer will look                                                                   
+#for them before the installation starts. This folder is currently                                                                       
+#/var/www/nailgun/ericsson/fuel-plugins/                                                                                                 
+#  - name: scaleio                                                                                                                       
+[root@fuel cee_config]# 
+[root@fuel cee_config]# 
